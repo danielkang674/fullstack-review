@@ -7,22 +7,33 @@ import RepoList from './components/RepoList.jsx';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       repos: []
     }
 
   }
 
-  search (term) {
+  search(term) {
     console.log(`${term} was searched`);
     // TODO
+    $.ajax({
+      method: "POST",
+      url: "http://localhost:1128/repos",
+      data: { term: term }
+    })
+      .done((data) => {
+        console.log('sent and maybe got data', data);
+      })
+      .fail(err => {
+        console.error('from react post request to my server', err);
+      });
   }
 
-  render () {
+  render() {
     return (<div>
       <h1>Github Fetcher</h1>
-      <RepoList repos={this.state.repos}/>
-      <Search onSearch={this.search.bind(this)}/>
+      <RepoList repos={this.state.repos} />
+      <Search onSearch={this.search.bind(this)} />
     </div>)
   }
 }
