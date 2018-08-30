@@ -9,7 +9,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      repos: []
+      repos: [],
+      alert: ""
     }
     this.getRepos = this.getRepos.bind(this);
   }
@@ -21,23 +22,23 @@ class App extends React.Component {
   search(term) {
     $.ajax({
       method: "POST",
-      url: "http://localhost:1128/repos",
+      url: "/repos",
       data: { term: term }
     })
       .done((data) => {
-        console.log('i was run', data);
-        this.getRepos(data);
+        this.getRepos();
+        this.setState({ alert: data });
       })
       .fail(err => {
+        this.setState({ alert: err.responseText });
         console.error('from react POST request to my server', err);
       });
   }
 
   getRepos() {
-    console.log('i was called getrepos');
     $.ajax({
       method: "GET",
-      url: "http://localhost:1128/repos",
+      url: "/repos",
     })
       .done(data => {
         this.setState({ repos: data });
@@ -48,10 +49,10 @@ class App extends React.Component {
   }
 
   render() {
-    return (<div>
+    return (<div className="container">
       <h1>Github Fetcher</h1>
       <RepoList repos={this.state.repos} />
-      <Search onSearch={this.search.bind(this)} getRepos={this.getRepos} />
+      <Search onSearch={this.search.bind(this)} getRepos={this.getRepos} alert={this.state.alert} />
       <RepoTable repos={this.state.repos} />
     </div>)
   }

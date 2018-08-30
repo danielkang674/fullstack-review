@@ -1,7 +1,8 @@
 const request = require('request');
 const config = require('../config.js');
+const { model } = require('../database/index.js');
 
-let getReposByUsername = (username, cb, errcb) => {
+let getReposByUsername = (username, cb) => {
   let options = {
     url: `https://api.github.com/users/${username}/repos`,
     headers: {
@@ -17,13 +18,16 @@ let getReposByUsername = (username, cb, errcb) => {
     }
     if (!Array.isArray(body)) {
       console.error('weird api call to github', body);
-      return errcb(body);
+      return cb(body);
     }
-    cb(null, body, errcb);
+    model.save(body, (err, data) => {
+      if (err) {
+        return cb(err);
+      } else {
+        return cb(null, 'Successfully got repos!');
+      }
+    });
   });
 }
 
 module.exports.getReposByUsername = getReposByUsername;
-
-
-// 'Accept': 'application/vnd.github.v3+json'

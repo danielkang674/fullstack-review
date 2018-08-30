@@ -13,27 +13,23 @@ app.use(express.static(__dirname + '/../client/dist'));
 
 app.post('/repos', function (req, res) {
   let username = req.body.term;
-  getReposByUsername(username, model.save, (err, data) => {
+  getReposByUsername(username, (err, data) => {
     if (err) {
-      return res.status(500).send(err.message + ' CHECK YO INPUT BRUH!');
+      return res.status(500).send(err.message + '! CHECK YO INPUT BRUH!');
     } else {
-      model.Repo.find((err, repo) => {
-        if (err) return res.status(500).send('GET req server route repos:' + err);
-        return res.status(200).send(repo);
-      })
-      // return res.status(200).send(data);
+      return res.status(200).send(data);
     }
   });
 });
 
 app.get('/repos', function (req, res) {
-  model.Repo.find((err, repo) => {
+  model.rankRepos((err, repos) => {
     if (err) return res.status(500).send('GET req server route repos:' + err);
-    return res.status(200).send(repo);
+    return res.status(200).send(repos);
   });
 });
 
-let port = 1128;
+let port = process.env.PORT || 1128;
 
 app.listen(port, function () {
   console.log(`listening on port ${port}`);
