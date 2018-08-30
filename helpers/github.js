@@ -1,5 +1,4 @@
 const request = require('request');
-const config = require('../config.js');
 const { model } = require('../database/index.js');
 
 let getReposByUsername = (username, cb) => {
@@ -7,7 +6,7 @@ let getReposByUsername = (username, cb) => {
     url: `https://api.github.com/users/${username}/repos`,
     headers: {
       'User-Agent': 'request',
-      'Authorization': `token ${config.TOKEN}`
+      'Authorization': `token ${process.env.GITHUB_TOKEN}`
     },
     json: true
   };
